@@ -21,8 +21,9 @@ function removeFromArray(arr, elt) {
 
 //calculating heuristic value
 function heuristic(a, b) {
+  //calculate diagonal distance
   // const d = dist(a.i, a.j, b.i, b.j);
-  const d = abs(a.i - b.i) + abs(a.j-b.j)
+  const d = abs(a.i - b.i) + abs(a.j - b.j);
   return d;
 }
 
@@ -78,34 +79,32 @@ function setup() {
   }
   start = grid[0][0];
   // end = grid[cols - 1][rows - 1];
-  end = grid[5][50];
+  end = grid[10][10];
 
   openSet.push(start);
 }
 
 function draw() {
-  // background(220);
   if (openSet.length > 0) {
     let winner = 0;
     for (let i = 0; i < openSet.length; i++) {
+      //minimum f-score spot in openSet 
       if (openSet[i].f < openSet[winner].f) {
         winner = i;
       }
     }
     const current = openSet[winner];
+    path = [];
+    let temp = current;
+    path.push(temp);
+    while (temp.previous) {
+      path.push(temp.previous);
+      temp = temp.previous;
+    }
     if (current === end) {
-      //Find the Path
-      path = [];
-      let temp = current;
-      path.push(temp);
-      while (temp.previous) {
-        path.push(temp.previous);
-        temp = temp.previous;
-      }
-      noLoop()
+      noLoop();
       console.log("DONE!");
     }
-    //openSet.remove(current)
     removeFromArray(openSet, current);
     closedSet.push(current);
     let neighbors = current.neighbors;
@@ -129,6 +128,7 @@ function draw() {
     }
   } else {
     // no solution
+    console.log("No Solution Found");
   }
   for (let i = 0; i < cols; i++) {
     for (let j = 0; j < rows; j++) {
